@@ -11,7 +11,7 @@ class Scraper:
         self.site = site
 
     def scrape(self):
-        print("Scraping ... ")
+        print("Scraping... ")
         n_http_no = 0
         n_http = 0
         n_html = 0
@@ -30,6 +30,7 @@ class Scraper:
         html = r.read()
         parser = "html.parser"
         sp = BeautifulSoup(html, parser)
+        print(Scraping .... web site has been read...)
         print("http links follow: ")
         for tag in sp.find_all("a"):    #added by glc
             url = tag.get("href")
