@@ -30,7 +30,7 @@ class Scraper:
         html = r.read()
         parser = "html.parser"
         sp = BeautifulSoup(html, parser)
-        print(Scraping .... web site has been read...)
+        print("Scraping .... web site has been read...")
         print("http links follow: ")
         for tag in sp.find_all("a"):    #added by glc
             url = tag.get("href")
