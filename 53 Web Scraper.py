@@ -12,9 +12,6 @@ class Scraper:
 
     def scrape(self):
         print("Scraping... ")
-        n_http_no = 0
-        n_http = 0
-        n_html = 0
         #assume the web url starts with https://
         h_site = "https://"+self.site
         try:
@@ -30,49 +27,33 @@ class Scraper:
         html = r.read()
         parser = "html.parser"
         sp = BeautifulSoup(html, parser)
-        print(Scraping .... web site has been read...)
-        print("http links follow: ")
-        for tag in sp.find_all("a"):    #added by glc
-            url = tag.get("href")
-            try:
-                if "http" in url:
-                    n_http += 1
-                    print(url)
-            except TypeError:
-                continue
+        print("Scraping .... web site has been read...")
+        # only search for anchor tags once and put the href values in a list
+        # map takes in a lambda function and things to apply the function to
+        urls = map(lambda tag: tag.get("href"), sp.find_all("a"))
+        # list comprehension to collect just the urls that contain http
+        http_urls = [url for url in urls if "http" in url]
+        print("http links follow: \n")
+        # join using the line separator character to have each on its own line
+        print("\n".join(http_urls))
+        non_http_urls = [url for url in urls if "http" not in url]
+        if non_http_urls:
+            print("\nNon-http Links follow: \n")
+            print("\n".join(non_http_urls))
+        else:
+            print("\nNo non-http links were found\n")
 
-        print("\nNon-http Links follow: ")
-        for tag in sp.find_all("a"):    #added by glc
-            url = tag.get("href")
-            try:
-                if "http" not in url:
-                    n_http_no += 1
-                    print(url)       #this print was not in the code suggested by the course author
-                              #this prints links to other web pages
-            except TypeError:
-                continue
+        html_urls = [url for url in urls if "html" in url]
+        if html_urls:
+            print("\nLinks that have  'html'  ")
+            print("\n".join(html_urls))
+        else:
+            print("\nNo html links were found\n")
 
-        if n_http_no == 0:
-            print("        No non-http links were found\n")
-
-        print("\nLinks that have  'html'  ")
-        for tag in sp.find_all("a"):   # this loop prints urls with html in the link
-            url = tag.get("href")
-            if url is None:
-                continue
-
-            try:
-                if "html" in url:
-                    n_html += 1
-                    print(url)
-            except TypeError:
-                continue
-
-        if n_html == 0:
-            print("          No html links were found\n")
-
-        print("\nAt this page there are ",n_http, " http links .... and ", n_http_no," non_http links ... and ",n_html, " links with 'html.'")
-
+        print("\nAt this page there are ",len(http_urls),
+            " http links .... and ", len(non_http_urls),
+            " non_http links ... and ",len(html_urls),
+            " links with 'html.'")
 
 #begin execution
 target_url = input("Enter url, do  NOT  include http:// or https:// ")
